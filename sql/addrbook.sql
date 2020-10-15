@@ -1,0 +1,1 @@
+CREATE DATABASE IF NOT EXISTS addrbook CHARACTER SET utf8 COLLATE utf8_general_ci;

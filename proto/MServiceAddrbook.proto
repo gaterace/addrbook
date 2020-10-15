@@ -1,0 +1,596 @@
+syntax = "proto3";
+
+package org.gaterace.mservice.addrbook;
+option csharp_namespace = "MServiceAddrbook";
+option go_package = "mserviceaddrbook";
+
+import "DmlExtension.proto";
+
+
+// address book party type
+enum PartyType {
+    // party type is unknown
+    UnknownParty = 0;
+    // party is a person
+    Person = 1;
+    // party is a business
+    Business = 2;
+}
+
+// address book address type
+enum AddressType {
+    // address type is unknown
+    UnknownAddress = 0;
+    // address is home address
+    Home = 1;
+    // address is shipping address
+    Shipping = 2;
+}
+
+// address book phone type
+enum PhoneType {
+    // phone type is unknown
+    UnknownPhone = 0;
+    // phone is home phone
+    HomePhone = 1;
+    // phone is work phone
+    WorkPhone = 2;
+    // phone is cell phone
+    CellPhone = 3;
+}
+
+
+service MServiceAddrbook {
+    // create new party
+    rpc create_party (CreatePartyRequest) returns (CreatePartyResponse);
+    // update an existing party
+    rpc update_party (UpdatePartyRequest) returns (UpdatePartyResponse);
+    // delete an existing party
+    rpc delete_party (DeletePartyRequest) returns (DeletePartyResponse);
+    // get party by id
+    rpc get_party (GetPartyRequest) returns (GetPartyResponse);
+    // get parties by mservice id
+    rpc get_parties (GetPartiesRequest) returns (GetPartiesResponse);
+    // get party wrapper by id
+    rpc get_party_wrapper (GetPartyWrapperRequest) returns (GetPartyWrapperResponse);
+    // create a new address for a party
+    rpc create_address (CreateAddressRequest) returns (CreateAddressResponse);
+    // update an existing address for a party
+    rpc update_address (UpdateAddressRequest) returns (UpdateAddressResponse);
+    // delete an existing address for a party
+    rpc delete_address (DeleteAddressRequest) returns (DeleteAddressResponse);
+    // get an address for a party by id
+    rpc get_address (GetAddressRequest) returns (GetAddressResponse);
+    // create a new  phone
+    rpc create_phone (CreatePhoneRequest) returns (CreatePhoneResponse);
+    // update an existing phone
+    rpc update_phone (UpdatePhoneRequest) returns (UpdatePhoneResponse);
+    // delete an existing phone
+    rpc delete_phone (DeletePhoneRequest) returns (DeletePhoneResponse);
+    // get a phone for a party by id
+    rpc get_phone (GetPhoneRequest) returns (GetPhoneResponse);
+    // get current server version and uptime - health check
+    rpc get_server_version (GetServerVersionRequest) returns (GetServerVersionResponse);
+  
+}
+
+
+
+// address book party entity
+message Party {
+    // party identifier
+    int64 party_id = 1;
+    // creation date
+    dml.DateTime created = 2;
+    // modification date
+    dml.DateTime modified = 3;
+    // deletion date
+    dml.DateTime deleted = 4;
+    // has record been deleted?
+    bool is_deleted = 5;
+    // version of this record
+    int32 version = 6;
+    // mservice account identifier
+    int64 mservice_id = 7;
+    // type of party record, int value of PartyType
+    int32 party_type = 8;
+    // string representation of party_type
+    string party_type_name = 9;
+    // party last name
+    string last_name = 10;
+    // party middle name
+    string middle_name = 11;
+    // party first name
+    string first_name = 12;
+    // party nickname
+    string nickname = 13;
+    // party company
+    string company = 14;
+    // party email
+    string email = 15;
+
+}
+
+// address book party entity wrapper
+message PartyWrapper {
+    // party identifier
+    int64 party_id = 1;
+    // creation date
+    dml.DateTime created = 2;
+    // modification date
+    dml.DateTime modified = 3;
+    // deletion date
+    dml.DateTime deleted = 4;
+    // has record been deleted?
+    bool is_deleted = 5;
+    // version of this record
+    int32 version = 6;
+    // mservice account identifier
+    int64 mservice_id = 7;
+    // type of party record, int value of PartyType
+    int32 party_type = 8;
+    // string representation of party_type
+    string party_type_name = 9;
+    // party last name
+    string last_name = 10;
+    // party middle name
+    string middle_name = 11;
+    // party first name
+    string first_name = 12;
+    // party nickname
+    string nickname = 13;
+    // party company
+    string company = 14;
+    // party email
+    string email = 15;
+    // list address book address objects
+    repeated Address addresses = 16;
+    // list address book phone objects
+    repeated Phone phones = 17;
+
+}
+
+// address book address entity
+message Address {
+    // party identifier
+    int64 party_id = 1;
+    // type of address record, int value of AddressType
+    int32 address_type = 2;
+    // creation date
+    dml.DateTime created = 3;
+    // modification date
+    dml.DateTime modified = 4;
+    // deletion date
+    dml.DateTime deleted = 5;
+    // has record been deleted?
+    bool is_deleted = 6;
+    // version of this record
+    int32 version = 7;
+    // string representation of address_type
+    string address_type_name = 8;
+    // mservice account identifier
+    int64 mservice_id = 9;
+    // postal address line 1
+    string address_1 = 10;
+    // postal address line 2
+    string address_2 = 11;
+    // postal city
+    string city = 12;
+    // postal state
+    string state = 13;
+    // postal code
+    string postal_code = 14;
+    // country code
+    string country_code = 15;
+
+}
+
+// address book phone entity
+message Phone {
+    // party identifier
+    int64 party_id = 1;
+    // type of phone record, int value of PhoneType
+    int32 phone_type = 2;
+    // creation date
+    dml.DateTime created = 3;
+    // modification date
+    dml.DateTime modified = 4;
+    // deletion date
+    dml.DateTime deleted = 5;
+    // has record been deleted?
+    bool is_deleted = 6;
+    // version of this record
+    int32 version = 7;
+    // string representation of phone_type
+    string phone_type_name = 8;
+    // mservice account identifier
+    int64 mservice_id = 9;
+    // phone number
+    string phone_number = 10;
+
+}
+
+// request parameters for method create_party
+message CreatePartyRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // type of party record, int value of PartyType
+    int32 party_type = 2;
+    // party last name
+    string last_name = 3;
+    // party middle name
+    string middle_name = 4;
+    // party first name
+    string first_name = 5;
+    // party nickname
+    string nickname = 6;
+    // party company
+    string company = 7;
+    // party email
+    string email = 8;
+
+}
+
+// response parameters for method create_party
+message CreatePartyResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+    // party identifier
+    int64 party_id = 4;
+
+}
+
+// request parameters for method update_party
+message UpdatePartyRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // version of this record
+    int32 version = 3;
+    // type of party record, int value of PartyType
+    int32 party_type = 4;
+    // party last name
+    string last_name = 5;
+    // party middle name
+    string middle_name = 6;
+    // party first name
+    string first_name = 7;
+    // party nickname
+    string nickname = 8;
+    // party company
+    string company = 9;
+    // party email
+    string email = 10;
+
+}
+
+// response parameters for method update_party
+message UpdatePartyResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// request parameters for method delete_party
+message DeletePartyRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// response parameters for method delete_party
+message DeletePartyResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// request parameters for method get_party
+message GetPartyRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+
+}
+
+// response parameters for method get_party
+message GetPartyResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // address book party object
+    Party party = 3;
+
+}
+
+// request parameters for method get_parties
+message GetPartiesRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+
+}
+
+// response parameters for method get_parties
+message GetPartiesResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // list address book party objects
+    repeated Party parties = 3;
+
+}
+
+// request parameters for method get_party_wrapper
+message GetPartyWrapperRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+
+}
+
+// response parameters for method get_party_wrapper
+message GetPartyWrapperResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // address book party wrapper object
+    PartyWrapper party_wrapper = 3;
+
+}
+
+// request parameters for method create_address
+message CreateAddressRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // type of address record, int value of AddressType
+    int32 address_type = 3;
+    // postal address line 1
+    string address_1 = 4;
+    // postal address line 2
+    string address_2 = 5;
+    // postal city
+    string city = 6;
+    // postal state
+    string state = 7;
+    // postal code
+    string postal_code = 8;
+    // country code
+    string country_code = 9;
+
+}
+
+// response parameters for method create_address
+message CreateAddressResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// request parameters for method update_address
+message UpdateAddressRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // type of address record, int value of AddressType
+    int32 address_type = 3;
+    // version of this record
+    int32 version = 4;
+    // postal address line 1
+    string address_1 = 5;
+    // postal address line 2
+    string address_2 = 6;
+    // postal city
+    string city = 7;
+    // postal state
+    string state = 8;
+    // postal code
+    string postal_code = 9;
+    // country code
+    string country_code = 10;
+
+}
+
+// response parameters for method update_address
+message UpdateAddressResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// request parameters for method delete_address
+message DeleteAddressRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // type of address record, int value of AddressType
+    int32 address_type = 3;
+    // version of this record
+    int32 version = 4;
+
+}
+
+// response parameters for method delete_address
+message DeleteAddressResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// request parameters for method get_address
+message GetAddressRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // type of address record, int value of AddressType
+    int32 address_type = 3;
+
+}
+
+// response parameters for method get_address
+message GetAddressResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // address book address object
+    Address address = 3;
+
+}
+
+// request parameters for method create_phone
+message CreatePhoneRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // type of phone record, int value of PhoneType
+    int32 phone_type = 3;
+    // phone number
+    string phone_number = 4;
+
+}
+
+// response parameters for method create_phone
+message CreatePhoneResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// request parameters for method update_phone
+message UpdatePhoneRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // type of phone record, int value of PhoneType
+    int32 phone_type = 3;
+    // version of this record
+    int32 version = 4;
+    // phone number
+    string phone_number = 5;
+
+}
+
+// response parameters for method update_phone
+message UpdatePhoneResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// request parameters for method delete_phone
+message DeletePhoneRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // type of phone record, int value of PhoneType
+    int32 phone_type = 3;
+    // version of this record
+    int32 version = 4;
+
+}
+
+// response parameters for method delete_phone
+message DeletePhoneResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version of this record
+    int32 version = 3;
+
+}
+
+// request parameters for method get_phone
+message GetPhoneRequest {
+    // mservice account identifier
+    int64 mservice_id = 1;
+    // party identifier
+    int64 party_id = 2;
+    // type of phone record, int value of PhoneType
+    int32 phone_type = 3;
+
+}
+
+// response parameters for method get_phone
+message GetPhoneResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // address book phone object
+    Phone phone = 3;
+
+}
+
+// request parameters for method get_server_version
+message GetServerVersionRequest {
+    // placeholder param to avoid empty message
+    int32 dummy_param = 1;
+
+}
+
+// response parameters for method get_server_version
+message GetServerVersionResponse {
+    // method result code
+    int32 error_code = 1;
+    // text error message
+    string error_message = 2;
+    // version level of server
+    string server_version = 3;
+    // server uptime in seconds
+    int64 server_uptime = 4;
+
+}
+
+
+
