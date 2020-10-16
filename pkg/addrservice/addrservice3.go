@@ -19,7 +19,7 @@ func (s *addrService) CreatePhone(ctx context.Context, req *pb.CreatePhoneReques
 	// TODO: validate all inputs
 
 	sqlstring := `INSERT INTO tb_Phone (inbPartyId, intPhoneType, dtmCreated, dtmModified, dtmDeleted, bitIsDeleted, 
-    intVersion, inbMserviceId, chvPhoneNumber) VALUES (?, ?. NOW(), NOW(), NOW(), 0, 1, ?, ?)`
+    intVersion, inbMserviceId, chvPhoneNumber) VALUES (?, ?, NOW(), NOW(), NOW(), 0, 1, ?, ?)`
 
 	stmt, err := s.db.Prepare(sqlstring)
 	if err != nil {
@@ -127,7 +127,7 @@ func (s *addrService) GetPhone(ctx context.Context, req *pb.GetPhoneRequest) (*p
 	resp := &pb.GetPhoneResponse{}
 
 	sqlstring := `SELECT inbPartyId, intPhoneType, dtmCreated, dtmModified, intVersion, inbMserviceId, 
-    chvPhoneNumber FROM tb_Phone WHERE inbMserviceId = ? AND inbPartyId = ? AND intPhoneType = ? bitIsDeleted = 0`
+    chvPhoneNumber FROM tb_Phone WHERE inbMserviceId = ? AND inbPartyId = ? AND intPhoneType = ? AND bitIsDeleted = 0`
 
 	stmt, err := s.db.Prepare(sqlstring)
 	if err != nil {
