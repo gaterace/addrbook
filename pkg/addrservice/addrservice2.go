@@ -156,13 +156,8 @@ func (s *addrService) GetAddress(ctx context.Context, req *pb.GetAddressRequest)
 	if err == nil {
 		addr.Created = dml.DateTimeFromString(created)
 		addr.Modified = dml.DateTimeFromString(modified)
-		if addr.AddressType == 1 {
-			addr.AddressTypeName = "home"
-		} else if addr.AddressType == 2 {
-			addr.AddressTypeName = "shipping"
-		} else {
-			addr.AddressTypeName = "unknown"
-		}
+		addr.AddressTypeName = addrTypeMap[addr.AddressType]
+
 		resp.ErrorCode = 0
 		resp.Address = &addr
 	} else if err == sql.ErrNoRows {

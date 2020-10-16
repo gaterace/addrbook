@@ -149,15 +149,7 @@ func (s *addrService) GetPhone(ctx context.Context, req *pb.GetPhoneRequest) (*p
 	if err == nil {
 		phone.Created = dml.DateTimeFromString(created)
 		phone.Modified = dml.DateTimeFromString(modified)
-		if phone.GetPhoneType() == 1 {
-			phone.PhoneTypeName = "home"
-		} else if phone.GetPhoneType() == 2 {
-			phone.PhoneTypeName = "work"
-		} else if phone.GetPhoneType() == 3 {
-			phone.PhoneTypeName = "cell"
-		} else {
-			phone.PhoneTypeName = "unknown"
-		}
+		phone.PhoneTypeName = phoneTypeMap[phone.GetPhoneType()]
 		resp.Phone = &phone
 	} else if err == sql.ErrNoRows {
 		resp.ErrorCode = 404

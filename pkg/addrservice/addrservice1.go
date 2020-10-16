@@ -19,6 +19,18 @@ import (
 
 var NotImplemented = errors.New("not implemented")
 
+var addrTypeMap = map[int32]string {
+	0: "unknown",
+	1: "home",
+	2: "shipping",
+}
+
+var phoneTypeMap = map[int32]string {
+	0: "unknown",
+	1: "home",
+	2: "work",
+	3: "cell",
+}
 type addrService struct {
 	logger    log.Logger
 	db        *sql.DB
@@ -296,14 +308,7 @@ func (s *addrService) GetPartyWrapper(ctx context.Context, req *pb.GetPartyWrapp
 		if err == nil {
 			addr.Created = dml.DateTimeFromString(created)
 			addr.Modified = dml.DateTimeFromString(modified)
-			if addr.AddressType == 1 {
-				addr.AddressTypeName = "home"
-			} else if addr.AddressType == 2 {
-				addr.AddressTypeName = "shipping"
-			} else {
-				addr.AddressTypeName = "unknown"
-			}
-
+			addr.AddressTypeName = addrTypeMap[addr.AddressType]
 			wrap.Addresses = append(wrap.Addresses, &addr)
 		} else {
 			level.Error(s.logger).Log("what", "Scan", "error", err)
@@ -348,15 +353,7 @@ func (s *addrService) GetPartyWrapper(ctx context.Context, req *pb.GetPartyWrapp
 		if err == nil {
 			phone.Created = dml.DateTimeFromString(created)
 			phone.Modified = dml.DateTimeFromString(modified)
-			if phone.PhoneType == 1 {
-				phone.PhoneTypeName = "home"
-			} else if phone.PhoneType == 2 {
-				phone.PhoneTypeName = "work"
-			} else if phone.PhoneType == 3 {
-				phone.PhoneTypeName = "cell"
-			} else {
-				phone.PhoneTypeName = "unknown"
-			}
+			phone.PhoneTypeName = phoneTypeMap[phone.GetPhoneType()]
 			wrap.Phones = append(wrap.Phones, &phone)
 		} else {
 			level.Error(s.logger).Log("what", "Scan", "error", err)
