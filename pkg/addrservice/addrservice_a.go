@@ -2,11 +2,22 @@ package addrservice
 
 import (
 	"database/sql"
+	"regexp"
 	"github.com/go-kit/kit/log/level"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gaterace/dml-go/pkg/dml"
 	pb "github.com/gaterace/addrbook/pkg/mserviceaddrbook"
 )
+
+var validName = regexp.MustCompile("^[-A-Za-z]{1,50}$")
+var validCompany = regexp.MustCompile("^[A-Za-z0-9][-A-Za-z0-9 .]{0,99}$")
+var validEmail = regexp.MustCompile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+var validAddress = regexp.MustCompile("^[A-Za-z0-9][-A-Za-z0-9 .]{0,99}$")
+var validCity = regexp.MustCompile("^[-A-Za-z][-A-Za-z] {0,49}$")
+var validState = regexp.MustCompile("^[-A-Za-z][-A-Za-z] {0,49}$")
+var validZipcode = regexp.MustCompile("^([0-9]{5})([\\-]{1}[0-9]{4})?$")
+var validCountryCode = regexp.MustCompile("^us$")
+var validPhone = regexp.MustCompile("^(\\+[1-9][0-9]{0,3}-)?[1-9][0-9]{2}-[1-9][0-9]{2}-[0-9]{4}(x[0-9]+)?$")
 
 // Generic response to set specific API method response.
 type genericResponse struct {
@@ -42,13 +53,7 @@ func (s *addrService) GetPartyHelper(mserviceId int64, partyId int64) (*genericR
 	if err == nil {
 		party.Created = dml.DateTimeFromString(created)
 		party.Modified = dml.DateTimeFromString(modified)
-		if party.PartyType == 1 {
-			party.PartyTypeName = "person"
-		} else if party.PartyType == 2 {
-			party.PartyTypeName = "business"
-		} else {
-			party.PartyTypeName = "unknown"
-		}
+		party.PartyTypeName = partyTypeMap[party.PartyType]
 		resp.ErrorCode = 0
 	} else if err == sql.ErrNoRows {
 		resp.ErrorCode = 404
@@ -80,4 +85,48 @@ func convertPartyToWrapper(party *pb.Party) *pb.PartyWrapper {
 	wrap.Email = party.GetEmail()
 
 	return &wrap
+}
+
+func isValidName(name string) bool {
+	return validName.MatchString(name)
+}
+
+func isValidCompany(name string) bool {
+	// make sure no trailing space, regex takes care of rest
+	if len(name) > 0 {
+		if name[len(name) - 1] == ' ' {
+			return false
+		}
+	}
+	return validCompany.MatchString(name)
+}
+
+func isValidEmail(name string) bool {
+	return validEmail.MatchString(name)
+}
+
+func isValidAddress(name string) bool {
+	return validAddress.MatchString(name)
+}
+
+func isValidCity(name string) bool {
+	return validCity.MatchString(name)
+}
+
+func isValidState(name string) bool {
+	return validState.MatchString(name)
+}
+
+func isValidPostalCode(name string) bool {
+	// initial support for us zipcodes
+	return validZipcode.MatchString(name)
+}
+
+func isValidCountryCode(name string) bool {
+	// initial support for us only
+	return validCountryCode.MatchString(name)
+}
+
+func isValidPhone(phone string) bool {
+	return validPhone.MatchString(phone)
 }

@@ -3,6 +3,8 @@ package addrservice
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"strings"
 
 	"github.com/gaterace/dml-go/pkg/dml"
 	"github.com/go-kit/kit/log/level"
@@ -16,7 +18,42 @@ import (
 func (s *addrService) CreateAddress(ctx context.Context, req *pb.CreateAddressRequest) (*pb.CreateAddressResponse, error) {
 	resp := &pb.CreateAddressResponse{}
 
-	// TODO: validate all inputs
+	// validate all inputs
+	var invalidFields []string
+
+	_, ok := addrTypeMap[req.GetAddressType()]; if !ok {
+		invalidFields = append(invalidFields, "address_type")
+	}
+
+	if !isValidName(req.GetAddress_1()) {
+		invalidFields = append(invalidFields, "address_1")
+	}
+
+	if (req.GetAddress_2() != "") && !isValidName(req.GetAddress_2()) {
+		invalidFields = append(invalidFields, "address_2")
+	}
+
+	if !isValidCity(req.GetCity()) {
+		invalidFields = append(invalidFields, "city")
+	}
+
+	if !isValidState(req.GetState()) {
+		invalidFields = append(invalidFields, "state")
+	}
+
+	if !isValidPostalCode(req.GetPostalCode()) {
+		invalidFields = append(invalidFields, "postal_code")
+	}
+
+	if !isValidCountryCode(req.GetCountryCode()) {
+		invalidFields = append(invalidFields, "country_code")
+	}
+
+	if len(invalidFields) > 0 {
+		resp.ErrorCode = 406
+		resp.ErrorMessage = fmt.Sprintf("invalid fields: %s", strings.Join(invalidFields, ","))
+		return resp, nil
+	}
 
 	sqlstring := `INSERT INTO tb_Address
 	(inbPartyId, intAddressType, dtmCreated, dtmModified, dtmDeleted, bitIsDeleted, intVersion, inbMserviceId,
@@ -51,7 +88,43 @@ func (s *addrService) CreateAddress(ctx context.Context, req *pb.CreateAddressRe
 func (s *addrService) UpdateAddress(ctx context.Context, req *pb.UpdateAddressRequest) (*pb.UpdateAddressResponse, error) {
 	resp := &pb.UpdateAddressResponse{}
 
-	// TODO: validate all inputs
+	// validate all inputs
+	var invalidFields []string
+
+	_, ok := addrTypeMap[req.GetAddressType()]; if !ok {
+		invalidFields = append(invalidFields, "address_type")
+	}
+
+	if !isValidName(req.GetAddress_1()) {
+		invalidFields = append(invalidFields, "address_1")
+	}
+
+	if (req.GetAddress_2() != "") && !isValidName(req.GetAddress_2()) {
+		invalidFields = append(invalidFields, "address_2")
+	}
+
+	if !isValidCity(req.GetCity()) {
+		invalidFields = append(invalidFields, "city")
+	}
+
+	if !isValidState(req.GetState()) {
+		invalidFields = append(invalidFields, "state")
+	}
+
+	if !isValidPostalCode(req.GetPostalCode()) {
+		invalidFields = append(invalidFields, "postal_code")
+	}
+
+	if !isValidCountryCode(req.GetCountryCode()) {
+		invalidFields = append(invalidFields, "country_code")
+	}
+
+	if len(invalidFields) > 0 {
+		resp.ErrorCode = 406
+		resp.ErrorMessage = fmt.Sprintf("invalid fields: %s", strings.Join(invalidFields, ","))
+		return resp, nil
+	}
+
 
 	sqlstring := `UPDATE tb_Address SET dtmModified = NOW(), intVersion = ?, chvAddress1 = ?, chvAddress2 = ?,
     chvCity = ?, chvState = ?, chvPostalCode= ?, chvCountryCode = ? WHERE

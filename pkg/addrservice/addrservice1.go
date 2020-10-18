@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
+	"strings"
 
 	"github.com/gaterace/dml-go/pkg/dml"
 	"github.com/go-kit/kit/log/level"
@@ -18,6 +20,12 @@ import (
 )
 
 var NotImplemented = errors.New("not implemented")
+
+var partyTypeMap = map[int32]string {
+	0: "unknown",
+	1: "person",
+	2: "business",
+}
 
 var addrTypeMap = map[int32]string {
 	0: "unknown",
@@ -67,7 +75,48 @@ func (s *addrService) NewApiServer(gServer *grpc.Server) error {
 func (s *addrService) CreateParty(ctx context.Context, req *pb.CreatePartyRequest) (*pb.CreatePartyResponse, error) {
 	resp := &pb.CreatePartyResponse{}
 
-	// TODO: validate all inputs
+	// validate all inputs
+
+	var invalidFields []string
+
+	if _, ok := partyTypeMap[req.GetPartyType()] ; !ok {
+		invalidFields = append(invalidFields, "party_type")
+	}
+
+	if !isValidName(req.GetLastName()) {
+		invalidFields = append(invalidFields, "last_name")
+	}
+
+	if !isValidName(req.GetFirstName()) {
+		invalidFields = append(invalidFields, "first_name")
+	}
+
+	if (req.GetMiddleName() != "") && !isValidName(req.GetMiddleName()) {
+		invalidFields = append(invalidFields, "middle_name")
+	}
+
+	if (req.GetNickname() != "") && !isValidName(req.GetNickname()) {
+		invalidFields = append(invalidFields, "nickname")
+	}
+
+	if (req.GetCompany() != "") && !isValidCompany(req.GetCompany()) {
+		invalidFields = append(invalidFields, "company")
+	}
+
+	if (req.GetCompany() == "") && (req.GetPartyType() == 2) {
+		invalidFields = append(invalidFields, "company")
+	}
+
+	if !isValidEmail(req.GetEmail()) {
+		invalidFields = append(invalidFields, "email")
+	}
+
+	if len(invalidFields) > 0 {
+		resp.ErrorCode = 406
+		resp.ErrorMessage = fmt.Sprintf("invalid fields: %s", strings.Join(invalidFields, ","))
+		return resp, nil
+	}
+
 
 	sqlstring := `INSERT INTO tb_Party
       (dtmCreated, dtmModified, dtmDeleted, bitIsDeleted, intVersion, inbMserviceId, intPartyType, chvLastName,
@@ -111,7 +160,42 @@ func (s *addrService) CreateParty(ctx context.Context, req *pb.CreatePartyReques
 func (s *addrService) UpdateParty(ctx context.Context, req *pb.UpdatePartyRequest) (*pb.UpdatePartyResponse, error) {
 	resp := &pb.UpdatePartyResponse{}
 
-	// TODO: validate all inputs
+	// validate all inputs
+	inputValid := true
+
+	if !isValidName(req.GetLastName()) {
+		inputValid = false
+	}
+
+	if !isValidName(req.GetFirstName()) {
+		inputValid = false
+	}
+
+	if (req.GetMiddleName() != "") && !isValidName(req.GetMiddleName()) {
+		inputValid = false
+	}
+
+	if (req.GetNickname() != "") && !isValidName(req.GetNickname()) {
+		inputValid = false
+	}
+
+	if (req.GetCompany() != "") && !isValidCompany(req.GetCompany()) {
+		inputValid = false
+	}
+
+	if (req.GetCompany() == "") && (req.GetPartyType() == 2) {
+		inputValid = false
+	}
+
+	if !isValidEmail(req.GetEmail()) {
+		inputValid = false
+	}
+
+	if !inputValid {
+		resp.ErrorCode = 406
+		resp.ErrorMessage = "one or more request fields are invalid"
+		return resp, nil
+	}
 
 	sqlstring := `UPDATE tb_Party SET dtmModified = NOW(), intVersion = ?, intPartyType = ?, chvLastName = ?,
     chvMiddleName = ?, chvFirstName = ?, chvNickname = ?, chvCompany = ?, chvEmail= ? 
@@ -240,13 +324,7 @@ func (s *addrService) GetParties(ctx context.Context, req *pb.GetPartiesRequest)
 		if err == nil {
 			party.Created = dml.DateTimeFromString(created)
 			party.Modified = dml.DateTimeFromString(modified)
-			if party.PartyType == 1 {
-				party.PartyTypeName = "person"
-			} else if party.PartyType == 2 {
-				party.PartyTypeName = "business"
-			} else {
-				party.PartyTypeName = "unknown"
-			}
+			party.PartyTypeName = partyTypeMap[party.PartyType]
 
 			resp.Parties = append(resp.Parties, &party)
 		} else {

@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"github.com/go-kit/kit/log/level"
+	"strings"
 	"time"
+	"fmt"
 	"github.com/gaterace/dml-go/pkg/dml"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -16,7 +18,21 @@ import (
 func (s *addrService) CreatePhone(ctx context.Context, req *pb.CreatePhoneRequest) (*pb.CreatePhoneResponse, error) {
 	resp := &pb.CreatePhoneResponse{}
 
-	// TODO: validate all inputs
+	var invalidFields []string
+
+	_, ok := phoneTypeMap[req.GetPhoneType()]; if !ok {
+		invalidFields = append(invalidFields, "phone_type")
+	}
+
+	if !isValidPhone(req.GetPhoneNumber()) {
+		invalidFields = append(invalidFields, "phone_number")
+	}
+
+	if len(invalidFields) > 0 {
+		resp.ErrorCode = 406
+		resp.ErrorMessage = fmt.Sprintf("invalid fields: %s", strings.Join(invalidFields, ","))
+		return resp, nil
+	}
 
 	sqlstring := `INSERT INTO tb_Phone (inbPartyId, intPhoneType, dtmCreated, dtmModified, dtmDeleted, bitIsDeleted, 
     intVersion, inbMserviceId, chvPhoneNumber) VALUES (?, ?, NOW(), NOW(), NOW(), 0, 1, ?, ?)`
