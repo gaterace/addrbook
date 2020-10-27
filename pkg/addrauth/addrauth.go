@@ -30,6 +30,7 @@ const (
 )
 
 type AddrAuth struct {
+	pb.UnimplementedMServiceAddrbookServer
 	logger          log.Logger
 	db              *sql.DB
 	rsaPSSPublicKey *rsa.PublicKey

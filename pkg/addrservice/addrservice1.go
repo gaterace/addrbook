@@ -40,6 +40,7 @@ var phoneTypeMap = map[int32]string {
 	3: "cell",
 }
 type addrService struct {
+	pb.UnimplementedMServiceAddrbookServer
 	logger    log.Logger
 	db        *sql.DB
 	startSecs int64

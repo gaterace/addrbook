@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package org.gaterace.mservice.addrbook;
 option csharp_namespace = "MServiceAddrbook";
-option go_package = "mserviceaddrbook";
+option go_package = "github.com/gaterace/addrbook/pkg/mserviceaddrbook";
 
 import "DmlExtension.proto";
 
