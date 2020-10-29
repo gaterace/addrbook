@@ -25,11 +25,11 @@ func (s *addrService) CreateAddress(ctx context.Context, req *pb.CreateAddressRe
 		invalidFields = append(invalidFields, "address_type")
 	}
 
-	if !isValidName(req.GetAddress_1()) {
+	if !isValidAddress(req.GetAddress_1()) {
 		invalidFields = append(invalidFields, "address_1")
 	}
 
-	if (req.GetAddress_2() != "") && !isValidName(req.GetAddress_2()) {
+	if (req.GetAddress_2() != "") && !isValidAddress(req.GetAddress_2()) {
 		invalidFields = append(invalidFields, "address_2")
 	}
 
