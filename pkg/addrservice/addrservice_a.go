@@ -15,8 +15,9 @@ var validEmail = regexp.MustCompile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z
 var validAddress = regexp.MustCompile("^[A-Za-z0-9][-A-Za-z0-9 .]{0,99}$")
 var validCity = regexp.MustCompile("^[-A-Za-z][-A-Za-z] {0,49}$")
 var validState = regexp.MustCompile("^[-A-Za-z][-A-Za-z] {0,49}$")
-var validZipcode = regexp.MustCompile("^([0-9]{5})([\\-]{1}[0-9]{4})?$")
-var validCountryCode = regexp.MustCompile("^us$")
+var validUSZipcode = regexp.MustCompile("^([0-9]{5})([\\-]{1}[0-9]{4})?$")
+var validPostalCode = regexp.MustCompile("^[-a-zA-z0-9]{5,20}$")
+var validCountryCode = regexp.MustCompile("^[a-z][a-z]$")
 var validPhone = regexp.MustCompile("^(\\+[1-9][0-9]{0,3}-)?[1-9][0-9]{2}-[1-9][0-9]{2}-[0-9]{4}(x[0-9]+)?$")
 
 // Generic response to set specific API method response.
@@ -117,9 +118,13 @@ func isValidState(name string) bool {
 	return validState.MatchString(name)
 }
 
-func isValidPostalCode(name string) bool {
+func isValidPostalCode(name string, country string) bool {
 	// initial support for us zipcodes
-	return validZipcode.MatchString(name)
+	if country == "us" {
+		return validUSZipcode.MatchString(name)
+	} else {
+		return validPostalCode.MatchString(name)
+	}
 }
 
 func isValidCountryCode(name string) bool {

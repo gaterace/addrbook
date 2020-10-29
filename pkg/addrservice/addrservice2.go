@@ -41,7 +41,7 @@ func (s *addrService) CreateAddress(ctx context.Context, req *pb.CreateAddressRe
 		invalidFields = append(invalidFields, "state")
 	}
 
-	if !isValidPostalCode(req.GetPostalCode()) {
+	if !isValidPostalCode(req.GetPostalCode(), req.GetCountryCode()) {
 		invalidFields = append(invalidFields, "postal_code")
 	}
 
@@ -111,7 +111,7 @@ func (s *addrService) UpdateAddress(ctx context.Context, req *pb.UpdateAddressRe
 		invalidFields = append(invalidFields, "state")
 	}
 
-	if !isValidPostalCode(req.GetPostalCode()) {
+	if !isValidPostalCode(req.GetPostalCode(), req.GetCountryCode()) {
 		invalidFields = append(invalidFields, "postal_code")
 	}
 
