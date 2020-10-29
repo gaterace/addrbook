@@ -1,3 +1,18 @@
+// Copyright 2020 Demian Harvill
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Command line gRPC client for MServiceAddrbook
+
 package main
 
 import (
@@ -75,12 +90,12 @@ func main() {
 		fmt.Printf("usage:\n")
 		fmt.Printf("    %s create_party --ptype <party type> --fname <first name> --mname <middle name>  --lname <last name> \n", prog)
 		fmt.Printf("          --nickname <nickname> --company <company> -e <email>\n")
-		fmt.Printf("    %s update_party --id <party id>  --version <version> --ptype <party type>  --fname <first name>\n" , prog)
+		fmt.Printf("    %s update_party --id <party id>  --version <version> --ptype <party type>  --fname <first name>\n", prog)
 		fmt.Printf("          --mname <middle name>  --lname <last name> --nickname <nickname> --company <company> -e <email>\n")
-		fmt.Printf("    %s delete_party --id <party id> --version <version>\n" , prog)
-		fmt.Printf("    %s get_party --id <party id> \n" , prog)
-		fmt.Printf("    %s get_parties  \n" , prog)
-		fmt.Printf("    %s get_party_wrapper --id <party id> \n" , prog)
+		fmt.Printf("    %s delete_party --id <party id> --version <version>\n", prog)
+		fmt.Printf("    %s get_party --id <party id> \n", prog)
+		fmt.Printf("    %s get_parties  \n", prog)
+		fmt.Printf("    %s get_party_wrapper --id <party id> \n", prog)
 		fmt.Printf("    %s create_address --id <party id> --atype <address type> --address1 <address 1> [--address2 <address 2>]\n", prog)
 		fmt.Printf("          --city <city> --state <state> --postal_code <postal code> [--country_code <country code>]\n")
 		fmt.Printf("    %s update_address --id <party id> --atype <address type> --version <version> --address1 <address 1> [--address2 <address 2>]\n", prog)

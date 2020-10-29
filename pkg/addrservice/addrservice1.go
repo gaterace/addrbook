@@ -1,3 +1,18 @@
+// Copyright 2020 Demian Harvill
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// The addrservice package provides the implementation for the MServiceAddrbook gRPC service.
+
 package addrservice
 
 import (
@@ -5,8 +20,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/gaterace/dml-go/pkg/dml"
 	"github.com/go-kit/kit/log/level"
@@ -21,24 +36,25 @@ import (
 
 var NotImplemented = errors.New("not implemented")
 
-var partyTypeMap = map[int32]string {
+var partyTypeMap = map[int32]string{
 	0: "unknown",
 	1: "person",
 	2: "business",
 }
 
-var addrTypeMap = map[int32]string {
+var addrTypeMap = map[int32]string{
 	0: "unknown",
 	1: "home",
 	2: "shipping",
 }
 
-var phoneTypeMap = map[int32]string {
+var phoneTypeMap = map[int32]string{
 	0: "unknown",
 	1: "home",
 	2: "work",
 	3: "cell",
 }
+
 type addrService struct {
 	pb.UnimplementedMServiceAddrbookServer
 	logger    log.Logger
@@ -80,7 +96,7 @@ func (s *addrService) CreateParty(ctx context.Context, req *pb.CreatePartyReques
 
 	var invalidFields []string
 
-	if _, ok := partyTypeMap[req.GetPartyType()] ; !ok {
+	if _, ok := partyTypeMap[req.GetPartyType()]; !ok {
 		invalidFields = append(invalidFields, "party_type")
 	}
 
@@ -117,7 +133,6 @@ func (s *addrService) CreateParty(ctx context.Context, req *pb.CreatePartyReques
 		resp.ErrorMessage = fmt.Sprintf("invalid fields: %s", strings.Join(invalidFields, ","))
 		return resp, nil
 	}
-
 
 	sqlstring := `INSERT INTO tb_Party
       (dtmCreated, dtmModified, dtmDeleted, bitIsDeleted, intVersion, inbMserviceId, intPartyType, chvLastName,

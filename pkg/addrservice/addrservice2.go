@@ -1,3 +1,16 @@
+// Copyright 2020 Demian Harvill
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package addrservice
 
 import (
@@ -21,7 +34,8 @@ func (s *addrService) CreateAddress(ctx context.Context, req *pb.CreateAddressRe
 	// validate all inputs
 	var invalidFields []string
 
-	_, ok := addrTypeMap[req.GetAddressType()]; if !ok {
+	_, ok := addrTypeMap[req.GetAddressType()]
+	if !ok {
 		invalidFields = append(invalidFields, "address_type")
 	}
 
@@ -91,7 +105,8 @@ func (s *addrService) UpdateAddress(ctx context.Context, req *pb.UpdateAddressRe
 	// validate all inputs
 	var invalidFields []string
 
-	_, ok := addrTypeMap[req.GetAddressType()]; if !ok {
+	_, ok := addrTypeMap[req.GetAddressType()]
+	if !ok {
 		invalidFields = append(invalidFields, "address_type")
 	}
 
@@ -124,7 +139,6 @@ func (s *addrService) UpdateAddress(ctx context.Context, req *pb.UpdateAddressRe
 		resp.ErrorMessage = fmt.Sprintf("invalid fields: %s", strings.Join(invalidFields, ","))
 		return resp, nil
 	}
-
 
 	sqlstring := `UPDATE tb_Address SET dtmModified = NOW(), intVersion = ?, chvAddress1 = ?, chvAddress2 = ?,
     chvCity = ?, chvState = ?, chvPostalCode= ?, chvCountryCode = ? WHERE

@@ -1,12 +1,26 @@
+// Copyright 2020 Demian Harvill
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package addrservice
 
 import (
 	"database/sql"
 	"regexp"
+
+	pb "github.com/gaterace/addrbook/pkg/mserviceaddrbook"
+	"github.com/gaterace/dml-go/pkg/dml"
 	"github.com/go-kit/kit/log/level"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gaterace/dml-go/pkg/dml"
-	pb "github.com/gaterace/addrbook/pkg/mserviceaddrbook"
 )
 
 var validName = regexp.MustCompile("^[-A-Za-z]{1,50}$")
@@ -48,8 +62,8 @@ func (s *addrService) GetPartyHelper(mserviceId int64, partyId int64) (*genericR
 	var party pb.Party
 
 	err = stmt.QueryRow(partyId, mserviceId).Scan(&party.PartyId, &created, &modified, &party.Version, &party.MserviceId,
-	&party.PartyType, &party.LastName, &party.MiddleName, &party.FirstName, &party.Nickname, &party.Company,
-	&party.Email)
+		&party.PartyType, &party.LastName, &party.MiddleName, &party.FirstName, &party.Nickname, &party.Company,
+		&party.Email)
 
 	if err == nil {
 		party.Created = dml.DateTimeFromString(created)
@@ -95,7 +109,7 @@ func isValidName(name string) bool {
 func isValidCompany(name string) bool {
 	// make sure no trailing space, regex takes care of rest
 	if len(name) > 0 {
-		if name[len(name) - 1] == ' ' {
+		if name[len(name)-1] == ' ' {
 			return false
 		}
 	}
