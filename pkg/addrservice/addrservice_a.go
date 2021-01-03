@@ -30,7 +30,7 @@ var validAddress = regexp.MustCompile("^[A-Za-z0-9][-A-Za-z0-9 .]{0,99}$")
 var validCity = regexp.MustCompile("^[A-Za-z][-A-Za-z .]{0,49}$")
 var validState = regexp.MustCompile("^[-A-Za-z][-A-Za-z] {0,49}$")
 var validUSZipcode = regexp.MustCompile("^([0-9]{5})([\\-]{1}[0-9]{4})?$")
-var validPostalCode = regexp.MustCompile("^[-a-zA-z0-9]{5,20}$")
+var validPostalCode = regexp.MustCompile("^[-a-zA-Z0-9]{5,20}$")
 var validCountryCode = regexp.MustCompile("^[a-z][a-z]$")
 var validPhone = regexp.MustCompile("^(\\+[1-9][0-9]{0,3}-)?[1-9][0-9]{2}-[1-9][0-9]{2}-[0-9]{4}(x[0-9]+)?$")
 
