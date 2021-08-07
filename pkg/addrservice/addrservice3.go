@@ -1,4 +1,4 @@
-// Copyright 2020 Demian Harvill
+// Copyright 2020-2021 Demian Harvill
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -201,7 +201,7 @@ func (s *addrService) GetServerVersion(ctx context.Context, req *pb.GetServerVer
 	resp := &pb.GetServerVersionResponse{}
 
 	currentSecs := time.Now().Unix()
-	resp.ServerVersion = "v0.9.0"
+	resp.ServerVersion = "v0.9.1"
 	resp.ServerUptime = currentSecs - s.startSecs
 
 	return resp, nil
