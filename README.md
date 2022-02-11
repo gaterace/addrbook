@@ -1,6 +1,6 @@
 # Addrbook
 
-Copyright 2020-2021 Demian Harvill
+Copyright 2020-2022 Demian Harvill
 
 ## Overview
 
