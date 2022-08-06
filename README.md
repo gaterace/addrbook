@@ -108,7 +108,26 @@ To build the server:
   
 **go build**
 
-The addrserver executable can then be run.  It expects a YAML configuration file in the same directory named **conf.yaml** .  The location of the configuration file can be changed with an environment variable,**ADDR_CONF** .
+The addrserver executable can then be run.  It expects a YAML configuration file in the same directory named **conf.yaml** .  The location of the configuration file can be changed with an environment variable,**ADDR_CONF** . Configuration can also be
+specified by command line flags or by environment variables (with ADDR_ prefix).
+
+```
+Usage:
+  addrserver [flags]
+
+Flags:
+      --cert_file string      Path to certificate file.
+      --conf string           Path to inventory config file. (default "conf.yaml")
+      --db_pwd string         Database user password.
+      --db_transport string   Database transport string.
+      --db_user string        Database user name.
+  -h, --help                  help for addrserver
+      --jwt_pub_file string   Path to JWT public certificate.
+      --key_file string       Path to certificate key file.
+      --log_file string       Path to log file.
+      --port int              Port for RPC connections (default 50057)
+      --tls                   Use tls for connection.
+```
 
 A commented sample configuration file is at **cmd/addrserver/conf.sample** . The locations of the various certificates and 
 keys need to be provided, as well as the database user and password and the MySql connection string.
