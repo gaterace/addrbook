@@ -26,6 +26,8 @@ addrbook.sublime-*
 cmd/addrclient/addrclient
 cmd/addrclient/addrbook.config
 cmd/addrserver/addrserver
+cmd/addrserver/addrserver_arm
+cmd/addrserver/addrserver_arm64
 cmd/addrserver/conf.yaml
 
 
