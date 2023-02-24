@@ -15,6 +15,7 @@
 
 *~
 *.old
+*.bak
 
 Gopkg.lock
 vendor/*
